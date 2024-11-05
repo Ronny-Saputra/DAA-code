@@ -1,10 +1,17 @@
 # Dijkstra's Algorithm Implementation in C
 
-This project implements Dijkstra's algorithm for finding the shortest path from a starting city to all other cities in a graph. The implementation includes dynamic memory allocation, a priority queue for efficient node extraction, and allows the user to define city names.
+This project implements Dijkstra's algorithm for finding the shortest path from a starting city to all other cities in a graph. The implementation includes a priority queue for efficient node extraction, and allows the user to define city names.
 
+**Group Name: [Kelompok 4]**
+
+**Group Members:**
+- [Darren Clement Tandy]
+- [Delvryad Juhadel Panannangan]
+- [Grace Patricia Ananta]
+- [Ronny Saputra]
+  
 ## Features
 
-- Dynamic handling of cities (no predefined limit other than memory).
 - Priority queue implementation for efficient time complexity.
 - User-defined city names for better clarity.
 - Interactive input for distances and starting city.
