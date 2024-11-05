@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <time.h>  // Tambahkan ini untuk pengukuran waktu
 
 typedef struct {
     int city;
@@ -154,8 +155,18 @@ int main() {
     printf("Enter the starting city (1 to %d): ", numCities);
     scanf("%d", &start);
 
+    // Measure start time
+    clock_t start_time = clock();
+
     // Run Dijkstra's algorithm
     dijkstra(graph, start, numCities);
+
+    // Measure end time
+    clock_t end_time = clock();
+
+    // Calculate and display running time
+    double running_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("Running time: %.6f seconds\n", running_time);
 
     // Free allocated memory
     for (int i = 0; i <= numCities; i++) {
