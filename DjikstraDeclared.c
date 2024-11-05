@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <time.h>
 
+
 typedef struct {
     int city;
     int time;
@@ -157,7 +158,14 @@ int main() {
     start--; // Sesuaikan ke indeks array
 
     // Jalankan algoritma Dijkstra
+    clock_t start_time = clock();
+
     dijkstra((int**)graph, start, numCities, cityNames);
 
+    clock_t end_time = clock();
+
+    // Hitung dan tampilkan waktu eksekusi
+    double running_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("Running time: %.6f seconds\n", running_time);
     return 0;
 }
