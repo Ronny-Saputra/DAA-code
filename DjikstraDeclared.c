@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <time.h>
 
-
 typedef struct {
     int city;
     int time;
@@ -75,14 +74,25 @@ Node extractMin(PriorityQueue* pq) {
     return root;
 }
 
-void dijkstra(int graph[19][19], int start, int numCities, char** cityNames){
+void printPath(int* parent, int j, char** cityNames) {
+    if (parent[j] == -1) {
+        printf("%s", cityNames[j]);
+        return;
+    }
+    printPath(parent, parent[j], cityNames);
+    printf(" -> %s", cityNames[j]);
+}
+
+void dijkstra(int graph[19][19], int start, int numCities, char** cityNames) {
     int* times = (int*)malloc(numCities * sizeof(int));
     bool* visited = (bool*)malloc(numCities * sizeof(bool));
+    int* parent = (int*)malloc(numCities * sizeof(int));
     PriorityQueue* pq = createPriorityQueue(numCities);
 
     for (int i = 0; i < numCities; i++) {
         times[i] = INT_MAX;
         visited[i] = false;
+        parent[i] = -1;  // Inisialisasi parent ke -1
     }
 
     times[start] = 0;
@@ -99,24 +109,29 @@ void dijkstra(int graph[19][19], int start, int numCities, char** cityNames){
             if (graph[u][v] && !visited[v] && times[u] != INT_MAX &&
                 times[u] + graph[u][v] < times[v]) {
                 times[v] = times[u] + graph[u][v];
+                parent[v] = u;  // Simpan kota sebelumnya dalam jalur
                 insert(pq, v, times[v]);
             }
         }
     }
 
-    printf("City\t\tShortest Time from Start\n");
+    // Cetak hasil
+    printf("City\t\tShortest Time from Start\tPath\n");
     for (int i = 0; i < numCities; i++) {
-        printf("%s\t%d\n", cityNames[i], times[i]);
+        printf("%s\t%d\t\t\t", cityNames[i], times[i]);
+        printPath(parent, i, cityNames);
+        printf("\n");
     }
 
     free(times);
     free(visited);
+    free(parent);
     free(pq->array);
     free(pq);
 }
 
 int main() {
-    int numCities = 19;
+    int numCities = 20;
     int start;
 
     char* cityNames[] = {
@@ -126,46 +141,43 @@ int main() {
         "Pontianak", "Balikpapan", "Banjarmasin"
     };
 
-    int graph[19][19] = {
-    {0, 429, 610, 889, 861, 579, 260, 188, 353, 256, 491, 767, 1081, 1039, 1154, 1222, 0, 550, 507},
-    {429, 0, 188, 491, 1224, 950, 636, 350, 0, 75, 322, 587, 0, 978, 676, 847, 0, 0, 530},
-    {610, 188, 0, 394, 0, 0, 0, 0, 679, 340, 0, 451, 595, 588, 0, 847, 0, 0, 0},
-    {889, 491, 394, 0, 0, 0, 0, 0, 644, 0, 0, 451, 595, 588, 676, 847, 1454, 0, 319},
-    {861, 1224, 0, 0, 0, 282, 604, 1079, 1109, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {579, 950, 0, 0, 282, 0, 0, 0, 828, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {260, 636, 0, 0, 604, 0, 0, 188, 353, 0, 491, 767, 1081, 1039, 1154, 1222, 0, 550, 507},
-    {188, 350, 0, 0, 1079, 0, 188, 0, 353, 256, 491, 767, 1081, 1039, 1154, 1222, 0, 550, 507},
-    {353, 0, 679, 644, 1109, 0, 828, 353, 0, 0, 451, 767, 1081, 1039, 1154, 1222, 0, 550, 507},
-    {256, 75, 340, 0, 0, 0, 0, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},
-    {491, 322, 0, 0, 0, 0, 491, 491, 451, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},
-    {767, 587, 451, 451, 0, 0, 767, 767, 767, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},
-    {1081, 0, 595, 595, 0, 0, 1081, 1081, 1081, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},
-    {1039, 978, 588, 588, 0, 0, 1039, 1039, 1039, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},
-    {1154, 676, 0, 676, 0, 0, 1154, 1154, 1154, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},
-    {1222, 847, 847, 847, 0, 0, 1222, 1222, 1222, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},
-    {0, 0, 0, 1454, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},
-    {550, 0, 0, 0, 0, 0, 550, 550, 550, 550, 550, 550, 550, 550, 550, 550, 550, 0, 0},
-    {507, 530, 0, 319, 0, 0, 507, 507, 507, 507, 507, 507, 507, 507, 507, 507, 507, 0, 0}
-};
+    int graph[20][20] = {
+        {0, 429, 610, 889, 861, 579, 260, 188, 353, 256, 491, 767, 1081, 1039, 1154, 1222, 0, 550, 507}, //1
+        {429, 0, 188, 491, 1224, 950, 636, 350, 0, 75, 322, 587, 0, 978, 676, 847, 0, 0, 530},//2
+        {610, 188, 0, 394, 0, 0, 0, 0, 679, 340, 0, 451, 595, 588, 0, 847, 0, 0, 0},//3
+        {889, 491, 394, 0, 0, 0, 0, 0, 644, 0, 0, 451, 595, 588, 676, 847, 1454, 0, 319},//4
+        {861, 1224, 0, 0, 0, 282, 604, 1079, 1109, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//5
+        {579, 950, 0, 0, 282, 0, 0, 0, 828, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//6
+        {260, 636, 0, 0, 604, 0, 0, 188, 353, 0, 491, 767, 1081, 1039, 1154, 1222, 0, 550, 507},//7
+        {188, 350, 0, 0, 1079, 0, 188, 0, 353, 256, 491, 767, 1081, 1039, 1154, 1222, 0, 550, 507},//8
+        {353, 0, 679, 644, 1109, 0, 828, 353, 0, 0, 451, 767, 1081, 1039, 1154, 1222, 0, 550, 507},//9
+        {256, 75, 340, 0, 0, 0, 0, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},//10
+        {491, 322, 0, 0, 0, 0, 491, 491, 451, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},//11
+        {767, 587, 451, 451, 0, 0, 767, 767, 767, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},//12
+        {1081, 0, 595, 595, 0, 0, 1081, 1081, 1081, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},//13
+        {1039, 978, 588, 588, 0, 0, 1039, 1039, 1039, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},//14
+        {1154, 676, 0, 676, 0, 0, 1154, 1154, 1154, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},//15
+        {1222, 847, 847, 847, 0, 0, 1222, 1222, 1222, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},//16
+        {0, 0, 0, 1454, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 550, 507},//17
+        {550, 0, 0, 0, 0, 0, 550, 550, 550, 550, 550, 550, 550, 550, 550, 550, 550, 0, 0},//18
+        {507, 530, 0, 319, 0, 0, 507, 507, 507, 507, 507, 507, 507, 507, 507, 507, 507, 0, 0},//19
+        {0, 394, 303, 367, 348, 387, 446, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 210, 0, 0}
+    };
 
-    // Tampilkan daftar kota untuk pemilihan kota awal
     printf("Pilih kota awal:\n");
     for (int i = 0; i < numCities; i++) {
         printf("%d. %s\n", i + 1, cityNames[i]);
     }
     printf("Masukkan nomor kota awal (1-%d): ", numCities);
     scanf("%d", &start);
-    start--; // Sesuaikan ke indeks array
+    start--;
 
-    // Jalankan algoritma Dijkstra
     clock_t start_time = clock();
-
     dijkstra((int**)graph, start, numCities, cityNames);
-
     clock_t end_time = clock();
 
-    // Hitung dan tampilkan waktu eksekusi
     double running_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
     printf("Running time: %.6f seconds\n", running_time);
+
     return 0;
 }
