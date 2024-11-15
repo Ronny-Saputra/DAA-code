@@ -19,7 +19,7 @@ This project implements Dijkstra's algorithm for finding the shortest path from 
 ## Requirements
 
 - A C compiler (GCC, Clang, etc.)
-- Standard libraries: `stdio.h`, `stdlib.h`, `limits.h`, `stdbool.h`
+- Standard libraries: `stdio.h`, `stdlib.h`, `limits.h`, `stdbool.h`, `<time.h>`
 
 ## Usage
 
@@ -27,4 +27,4 @@ This project implements Dijkstra's algorithm for finding the shortest path from 
 2. Open a terminal and navigate to the directory containing the source code.
 3. Compile the code using the following command:
    ```bash
-   gcc DijkstraFlight.c -o dijkstra
+   gcc DijkstraDeclared.c -o DijkstraDeclared
