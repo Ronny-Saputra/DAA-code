@@ -15,6 +15,7 @@ This project implements Dijkstra's algorithm for finding the shortest path from 
 - Priority queue implementation for efficient time complexity.
 - User-defined city names for better clarity.
 - Interactive input for distances and starting city.
+- Template for all major airport in Indonesia
 
 ## Requirements
 
@@ -27,4 +28,4 @@ This project implements Dijkstra's algorithm for finding the shortest path from 
 2. Open a terminal and navigate to the directory containing the source code.
 3. Compile the code using the following command:
    ```bash
-   gcc DijkstraFlight.c -o dijkstra
+   gcc DijkstraDeclared.c -o dijkstra
